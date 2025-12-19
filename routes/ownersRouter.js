@@ -34,7 +34,9 @@ router.get("/logout", isAdmin, logoutOwner);
 //     router.post("/create", createOwner);
 // }
 
-router.post("/create", createOwner);
+// important route. 
+// Hide it when not in use. 
+// router.post("/create", createOwner);
 
 // Admin dashboard - View all products
 router.get("/admin", isAdmin, async function (req, res) {

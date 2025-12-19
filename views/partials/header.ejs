@@ -28,6 +28,20 @@
             }
         }
     </script>
+
+    <style>
+        /* Hide arrows in number input for Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Hide arrows in number input for Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
 </head>
 
 <body class="font-sans bg-white text-black dark:bg-zinc-900 dark:text-white transition-colors duration-300">

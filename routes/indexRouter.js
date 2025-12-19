@@ -22,55 +22,80 @@ router.get("/shop", isloggedin, async function (req, res) {
         let success = req.flash("success");
         let error = req.flash("error");
         
-        // Get query parameters
-        let { sortby, collection, filterby } = req.query;
+        // 1. EXTRACT ALL QUERY PARAMETERS
+        let { sortby, collection, filterby, search, minPrice, maxPrice, page } = req.query;
         
-        // Build query object
+        // 2. DEFAULT VALUES
+        page = Number(page) || 1;
+        const limit = 10; // Items per page
+        const skip = (page - 1) * limit;
+
+        // 3. BUILD THE FILTER QUERY
         let query = {};
         
-        // COLLECTION FILTER
+        // A. Search Logic (Regex for partial match, case-insensitive)
+        if (search && search.trim().length > 0) {
+            query.name = { $regex: search, $options: "i" };
+        }
+
+        // B. Price Logic
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = Number(minPrice);
+            if (maxPrice) query.price.$lte = Number(maxPrice);
+        }
+
+        // C. Collection Logic
         if (collection === "new") {
-            // Products created in last 7 days
             let sevenDaysAgo = new Date();
             sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
             query.createdAt = { $gte: sevenDaysAgo };
         } else if (collection === "discounted") {
-            // Products with discount > 0
             query.discount = { $gt: 0 };
         }
-        // "all" collection or no collection = no additional filter
-        
-        // AVAILABILITY FILTER
+
+        // D. Availability Logic
         if (filterby === "available") {
             query.isAvailable = true;
             query.stock = { $gt: 0 };
-        } else if (filterby === "discount") {
-            query.discount = { $gt: 0 };
-        }
+        } 
         
-        // Fetch products with query
-        let products = await productModel.find(query);
+        // 4. SORTING LOGIC
+        let sortOption = { createdAt: -1 }; // Default: Newest first
         
-        // SORTING
         if (sortby === "popular") {
-            // Sort by views (most popular first)
-            products.sort((a, b) => b.views - a.views);
-        } else if (sortby === "newest") {
-            // Sort by creation date (newest first)
-            products.sort((a, b) => b.createdAt - a.createdAt);
-        } else {
-            // Default: sort by newest
-            products.sort((a, b) => b.createdAt - a.createdAt);
+            sortOption = { views: -1 };
+        } else if (sortby === "price_low") {
+            sortOption = { price: 1 }; // Ascending
+        } else if (sortby === "price_high") {
+            sortOption = { price: -1 }; // Descending
         }
-        
+
+        // 5. FETCH DATA WITH PAGINATION
+        // We need two queries: one for data, one for counting total items (for page numbers)
+        const totalProducts = await productModel.countDocuments(query);
+        const products = await productModel.find(query)
+            .sort(sortOption)
+            .skip(skip)
+            .limit(limit);
+
+        const totalPages = Math.ceil(totalProducts / limit);
+
         res.render("shop", { 
             products, 
             success,
             error,
             isShop: true,
+            // Pass all filters back to EJS so we can keep inputs filled
             sortby: sortby || "newest",
             collection: collection || "all",
-            filterby: filterby || "none"
+            filterby: filterby || "none",
+            search: search || "",
+            minPrice: minPrice || "",
+            maxPrice: maxPrice || "",
+            currentPage: page,
+            totalPages,
+            totalProducts
         });
         
     } catch (error) {
@@ -79,6 +104,8 @@ router.get("/shop", isloggedin, async function (req, res) {
         res.redirect("/");
     }
 });
+
+
 
 // 1. REVISED CART ROUTE
 router.get("/cart", isloggedin, async function (req, res) {
