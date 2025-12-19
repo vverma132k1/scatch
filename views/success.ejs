@@ -1,0 +1,53 @@
+<%- include('./partials/header') %>
+
+<div class="w-full min-h-screen flex items-center justify-start flex-col px-20 py-20 bg-gray-50">
+    
+    <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mb-5 shadow-lg">
+        <i class="ri-check-line text-4xl text-white"></i>
+    </div>
+    
+    <h1 class="text-3xl font-bold mb-2">Order Confirmed!</h1>
+    <p class="text-gray-600 mb-8">Thank you, <%= user.fullname %>. We have received your order.</p>
+
+    <div class="w-full max-w-2xl bg-white rounded-lg shadow-md overflow-hidden mb-10">
+        <div class="bg-gray-100 px-6 py-4 border-b">
+            <h3 class="font-semibold text-lg">Order Summary</h3>
+        </div>
+        
+        <div class="p-6">
+            <div class="flex flex-col gap-4">
+                <% invoiceItems.forEach(item => { %>
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                        <div>
+                            <h4 class="font-medium"><%= item.name %></h4>
+                            <p class="text-sm text-gray-500">Qty: <%= item.quantity %> x ₹<%= item.finalPrice %></p>
+                        </div>
+                        <span class="font-semibold">₹<%= item.total %></span>
+                    </div>
+                <% }) %>
+            </div>
+
+            <div class="my-4 border-t border-dashed border-gray-300"></div>
+
+            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                <span>Platform Fee</span>
+                <span>₹<%= platformFee %></span>
+            </div>
+            <div class="flex justify-between text-sm text-gray-600 mb-4">
+                <span>Shipping Fee</span>
+                <span><%= shippingFee === 0 ? 'FREE' : '₹' + shippingFee %></span>
+            </div>
+
+            <div class="flex justify-between items-center bg-green-50 p-4 rounded-md">
+                <span class="font-bold text-lg text-green-800">Total Paid</span>
+                <span class="font-bold text-lg text-green-800">₹<%= finalAmount %></span>
+            </div>
+        </div>
+    </div>
+    
+    <a href="/shop" class="px-8 py-3 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition shadow-md">
+        Continue Shopping
+    </a>
+</div>
+
+<%- include('./partials/footer') %>

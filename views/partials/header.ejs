@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" class="light"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatch</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Enables toggling via class
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'], // Sets Outfit as default font
+                    },
+                    colors: {
+                        // Custom aesthetics (optional)
+                        'aesthetic-black': '#121212',
+                        'aesthetic-gray': '#F5F5F5',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="font-sans bg-white text-black dark:bg-zinc-900 dark:text-white transition-colors duration-300">
+    
+    <nav class="w-full fixed top-0 left-0 px-10 py-5 flex justify-between items-center bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 z-50 border-b border-gray-100 dark:border-zinc-800">
+        
+        <h3 class="text-2xl font-semibold tracking-tight uppercase">Scatch</h3>
+        
+        <% 
+        var loggedin = (typeof loggedin !== "undefined") ? loggedin : true;
+        var isAdmin = (typeof isAdmin !== "undefined") ? isAdmin : false;
+        %>
+        
+        <div class="flex gap-8 items-center text-sm font-medium uppercase tracking-wide">
+            
+            <% if (!loggedin) { %>
+                <a href="/owners/login" class="hover:text-blue-500 transition">Admin</a>
+            <% } %>
+
+            <% if (loggedin && !isAdmin) { %>
+                
+                <% if (typeof isShop !== 'undefined' && isShop) { %>
+                    <span class="text-zinc-400 hidden md:block mr-2">Hi, <%= user.fullname %></span>
+                <% } %>
+                
+                <% if (typeof isCart === 'undefined' || !isCart) { %>
+                    <a href="/cart" class="hover:text-blue-500 transition">Cart</a>
+                <% } %>
+                
+                <% if (typeof hideAccountBtn === 'undefined' || !hideAccountBtn) { %>
+                    <a href="/users/account" class="hover:text-blue-500 transition">Account</a>
+                <% } %>
+                
+                <a class="text-red-500 hover:text-red-600" href="/users/logout">Logout</a>
+            <% } %>
+
+            <% if (isAdmin) { %>
+                <span class="text-zinc-500">Admin Panel</span>
+            <% } %>
+
+            <button onclick="toggleTheme()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition">
+                <i class="ri-moon-line dark:hidden"></i>
+                <i class="ri-sun-line hidden dark:block text-white"></i>
+            </button>
+        </div>
+    </nav>
+    <div class="h-20"></div> <script>
+        // Check local storage for theme preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        }
+    </script>

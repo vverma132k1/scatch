@@ -1,0 +1,86 @@
+<%- include('./partials/header') %>
+
+<div class="w-full min-h-screen flex items-center justify-center bg-gray-50 px-20">
+    <div class="bg-white p-10 rounded-lg shadow-md w-full max-w-md my-10">
+        
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Edit Profile</h2>
+            <a href="/users/account" class="text-gray-500 hover:text-black">
+                <i class="ri-close-line text-2xl"></i>
+            </a>
+        </div>
+
+        <form action="/users/update-profile" method="post" enctype="multipart/form-data" autocomplete="off">
+            
+            <div class="mb-6 flex flex-col items-center">
+                <div class="w-24 h-24 rounded-full overflow-hidden mb-3 border flex items-center justify-center bg-gray-50">
+                    <% if(user.picture) { %>
+                        <img id="profile-preview" class="w-full h-full object-cover" src="data:image/jpeg;base64,<%= user.picture.toString('base64') %>">
+                    <% } else { %>
+                        <img id="profile-preview" class="w-full h-full object-cover hidden" src=""> 
+                        <span id="profile-placeholder" class="text-gray-400 text-xs">No Image</span>
+                    <% } %>
+                </div>
+                
+                <label class="cursor-pointer text-blue-600 text-sm font-medium hover:underline">
+                    Change Photo
+                    <input type="file" name="image" class="hidden" onchange="previewImage(event)">
+                </label>
+            </div>
+
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                <input type="text" name="fullname" value="<%= user.fullname %>" 
+                       class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+            </div>
+
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
+                <input type="number" name="contact" value="<%= user.contact || '' %>" placeholder="Phone number"
+                       class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+            </div>
+
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                <textarea name="address" rows="2" placeholder="House No, Street Area"
+                       class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"><%= user.address || '' %></textarea>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Pincode</label>
+                <input type="number" name="pincode" value="<%= user.pincode || '' %>" placeholder="110001"
+                       class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition">
+                Save Changes
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const reader = new FileReader();
+        
+        reader.onload = function() {
+            const preview = document.getElementById('profile-preview');
+            const placeholder = document.getElementById('profile-placeholder');
+            
+            // Set the source to the file data
+            preview.src = reader.result;
+            
+            // Show image, hide text placeholder if it exists
+            preview.classList.remove('hidden');
+            if (placeholder) placeholder.style.display = 'none';
+        };
+        
+        // Read the file as a Data URL
+        if(input.files && input.files[0]) {
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+<%- include('./partials/footer') %>

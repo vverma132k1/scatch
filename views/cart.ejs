@@ -1,0 +1,176 @@
+<%- include('./partials/header') %>
+
+<% if(user.cart.length === 0) { %>
+    <div class="w-full min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-zinc-900 transition-colors duration-300 -mt-20">
+        <div class="w-24 h-24 bg-gray-200 dark:bg-zinc-800 rounded-full flex items-center justify-center mb-5 animate-pulse">
+            <i class="ri-shopping-cart-2-line text-4xl text-gray-400 dark:text-zinc-500"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-black dark:text-white mb-2">Your Cart is Empty</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-6 text-center max-w-xs">Looks like you haven't added anything to your cart yet.</p>
+        
+        <a href="/shop" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-medium transition-all shadow-lg shadow-blue-500/30">
+            Start Shopping
+        </a>
+    </div>
+
+<% } else { %>
+    
+    <div class="w-full min-h-screen flex items-start px-20 py-20 gap-10 bg-gray-50 dark:bg-zinc-900 transition-colors duration-300">
+        
+        <div class="w-[60%] flex flex-col gap-5">
+            
+            <div class="mb-2">
+                <a href="/shop" class="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
+                    <i class="ri-arrow-left-line"></i> Back to Shop
+                </a>
+            </div>
+    
+            <% user.cart.forEach(function(item) { %>
+                <div class="w-full rounded-md overflow-hidden flex border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 transition-colors duration-300">
+                    
+                    <div class="w-40 h-40 flex items-center justify-center shrink-0" style="background-color: <%= item.productId.bgcolor %>">
+                        <img class="h-32 object-contain mix-blend-multiply dark:mix-blend-normal" 
+                             src="data:image/jpeg;base64,<%= item.productId.image.toString('base64') %>" 
+                             alt="<%= item.productId.name %>">
+                    </div>
+    
+                    <div class="w-full flex flex-col justify-between px-5 py-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-xl font-semibold text-black dark:text-white"><%= item.productId.name %></h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Price: ₹ <%= item.productId.price %></p>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold text-black dark:text-white">
+                                ₹ <%= (item.productId.price - item.productId.discount) * item.quantity %>
+                            </h3>
+                        </div>
+    
+                        <div class="flex justify-between items-end mt-4">
+                            <div class="flex items-center gap-2 border border-gray-300 dark:border-zinc-600 px-2 py-1 rounded-md">
+                                <button onclick="updateCart(event, '<%= item.productId._id %>', 'decrease')" class="text-xl px-2 hover:text-blue-500 text-black dark:text-white">-</button>
+                                <span class="px-2 font-semibold text-black dark:text-white"><%= item.quantity %></span>
+                                <button onclick="updateCart(event, '<%= item.productId._id %>', 'add')" class="text-xl px-2 hover:text-blue-500 text-black dark:text-white">+</button>
+                            </div>
+                            
+                            <% if(item.productId.discount > 0) { %>
+                                <span class="text-green-600 text-sm font-medium">Savings: ₹ <%= item.productId.discount * item.quantity %></span>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    
+        <div class="w-[40%] bg-white dark:bg-zinc-800 p-10 shadow-sm border dark:border-zinc-700 rounded-md sticky top-24">
+            <h3 class="text-xl font-bold mb-5 text-black dark:text-white">Order Summary</h3>
+                
+            <div class="flex flex-col gap-3 border-b dark:border-zinc-700 pb-5">
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-300">Total MRP</span>
+                    <span class="text-black dark:text-white">₹ <%= totalMRP %></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-300">Discount on MRP</span>
+                    <span class="text-green-600">- ₹ <%= totalDiscount %></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-300">Platform Fee</span>
+                    <span class="text-black dark:text-white">₹ <%= platformFee %></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-300">Shipping Fee</span>
+                    <% if(shippingFee === 0) { %>
+                        <span class="text-green-600">FREE</span>
+                    <% } else { %>
+                        <span class="text-black dark:text-white">₹ <%= shippingFee %></span>
+                    <% } %>
+                </div>
+            </div>
+    
+            <div class="flex justify-between mt-5">
+                <h3 class="text-xl font-bold text-black dark:text-white">Total Amount</h3>
+                <h3 class="text-xl font-bold text-green-600">₹ <%= bill %></h3>
+            </div>
+    
+            <div class="mt-8">
+                <button type="button" onclick="payNow()" class="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 transition font-medium">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+<% } %>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    async function updateCart(event, productId, action) {
+        event.preventDefault();
+        const route = action === 'add' ? '/addtocart/' : '/decreaseqty/';
+        
+        try {
+            const response = await fetch(route + productId, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const data = await response.json();
+            if (data.success) {
+                location.reload(); 
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function payNow() {
+        try {
+            // 1. Create Order
+            const response = await fetch('/create/orderId', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const order = await response.json();
+
+            // 2. Razorpay Options
+            var options = {
+                "key": "rzp_test_RsMNddw4A5bhM9", // REPLACE WITH YOUR KEY ID
+                "amount": order.amount, 
+                "currency": "INR",
+                "name": "Scatch Inc.",
+                "description": "Payment for your cart items",
+                "order_id": order.id, 
+                "handler": async function (response){
+                    // 3. Verify Payment
+                    const verifyRes = await fetch('/api/payment/verify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        })
+                    });
+
+                    const verifyData = await verifyRes.json();
+                    
+                    if(verifyData.success){
+                        window.location.href = verifyData.url; 
+                    } else {
+                        alert("Payment verification failed");
+                    }
+                },
+                "theme": { "color": "#2563EB" }
+            };
+            
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+
+        } catch (error) {
+            console.error("Payment Error:", error);
+            alert("Something went wrong with the payment gateway.");
+        }
+    }
+</script>
+
+<%- include('./partials/footer') %>

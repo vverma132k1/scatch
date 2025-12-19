@@ -1,0 +1,95 @@
+<%- include('./partials/header') %>
+
+<div class="w-full min-h-screen px-20 py-10 bg-gray-50 dark:bg-zinc-900 transition-colors duration-300">
+    
+    <div class="mb-5">
+        <a href="/shop" class="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">
+            <i class="ri-arrow-left-line"></i> Back to Shop
+        </a>
+    </div>
+
+    <div class="flex justify-between items-center mb-10">
+        <h2 class="text-3xl font-bold text-black dark:text-white">My Account</h2>
+    </div>
+    
+    <div class="flex gap-10 items-start">
+        
+        <div class="w-[30%] bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-zinc-700">
+            <div class="flex flex-col items-center mb-6">
+                <div class="w-32 h-32 rounded-full overflow-hidden mb-3 border-4 border-blue-100 dark:border-zinc-600 flex items-center justify-center bg-gray-100 dark:bg-zinc-700">
+                    <% if(user.picture) { %>
+                        <img class="w-full h-full object-cover" src="data:image/jpeg;base64,<%= user.picture.toString('base64') %>" alt="Profile">
+                    <% } else { %>
+                        <span class="text-4xl font-bold text-blue-600"><%= user.fullname.charAt(0).toUpperCase() %></span>
+                    <% } %>
+                </div>
+
+                <h3 class="text-xl font-semibold text-black dark:text-white"><%= user.fullname %></h3>
+                <p class="text-gray-500 dark:text-gray-400"><%= user.email %></p>
+                
+                <a href="/users/edit-profile" class="mt-3 px-4 py-1 text-sm border border-blue-500 text-blue-500 rounded-full hover:bg-blue-50 dark:hover:bg-zinc-700 transition">
+                    Edit Profile
+                </a>
+            </div>
+            
+            <div class="border-t border-gray-200 dark:border-zinc-700 pt-4">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Contact Number</p>
+                <p class="font-medium mb-3 text-black dark:text-white"><%= user.contact ? user.contact : "Not provided" %></p>
+                
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Address</p>
+                <p class="font-medium text-black dark:text-white">
+                    <% if(user.address) { %>
+                        <%= user.address %><br>
+                        <span class="text-gray-400 text-sm">Pin: <%= user.pincode %></span>
+                    <% } else { %>
+                        <span class="text-gray-400 italic">No address added</span>
+                    <% } %>
+                </p>
+            </div>
+            
+            <a href="/users/logout" class="block w-full text-center mt-6 py-2 border border-red-500 text-red-500 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition">Logout</a>
+        </div>
+        
+        <div class="w-[70%]">
+            <h3 class="text-xl font-semibold mb-5 text-black dark:text-white">Order History</h3>
+            
+            <% if(user.orders.length === 0) { %>
+                <div class="bg-white dark:bg-zinc-800 p-10 rounded-lg shadow-sm border border-gray-200 dark:border-zinc-700 text-center">
+                    <p class="text-gray-500 dark:text-gray-400 mb-4">You haven't placed any orders yet.</p>
+                    <a href="/shop" class="text-blue-500 hover:underline">Start Shopping</a>
+                </div>
+            <% } else { %>
+                <div class="flex flex-col gap-5">
+                    <% user.orders.slice().reverse().forEach(order => { %>
+                        <div class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-zinc-700">
+                            
+                            <div class="flex justify-between items-center border-b border-gray-200 dark:border-zinc-700 pb-3 mb-3">
+                                <div>
+                                    <p class="font-bold text-gray-800 dark:text-white"><%= order.orderId %></p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                                        <%= new Date(order.date).toLocaleDateString('en-GB') %>
+                                    </p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Total Amount</p>
+                                    <p class="font-bold text-green-600">₹<%= order.totalPaid %></p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col gap-2">
+                                <% order.items.forEach(item => { %>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-700 dark:text-gray-300"><%= item.name %> <span class="text-gray-400">x<%= item.quantity %></span></span>
+                                        <span class="text-black dark:text-white">₹<%= item.total %></span>
+                                    </div>
+                                <% }) %>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('./partials/footer') %>

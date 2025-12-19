@@ -1,0 +1,106 @@
+<%- include('./partials/header') %>
+
+<div class="min-h-screen flex flex-col px-10 py-10 bg-gray-50 dark:bg-zinc-900 transition-colors duration-300">
+    
+    <div class="mb-5">
+        <a href="/owners/admin" class="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
+            <i class="ri-arrow-left-line"></i> Back to Admin Panel
+        </a>
+    </div>
+
+    <% if(error.length > 0){ %>
+        <div class="absolute top-5 left-1/2 -translate-x-1/2 p-3 rounded-md bg-red-500">
+            <span class="inline-block mt-1 mb-1 text-white"><%= error %></span>
+        </div>
+    <% } %>
+
+    <div class="w-full flex-grow flex items-start justify-center">
+        
+        <div class="w-full max-w-3xl bg-white dark:bg-zinc-800 p-8 rounded-lg shadow-sm border border-gray-200 dark:border-zinc-700">
+            
+            <h2 class="text-2xl font-bold mb-8 text-black dark:text-white">Edit Product</h2>
+            
+            <form autocomplete="off" action="/products/edit/<%= product._id %>" method="post" enctype="multipart/form-data">
+                
+                <div class="flex items-center gap-5 mb-8">
+                    <div class="w-24 h-24 rounded-md overflow-hidden bg-gray-100 dark:bg-zinc-700 flex items-center justify-center border border-gray-200 dark:border-zinc-600">
+                        <img class="h-20 object-contain" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" alt="">
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-medium mb-1 text-black dark:text-white">Current Image</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Upload a new one to replace it.</p>
+                        <input type="file" name="image" class="block w-full text-sm text-slate-500
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100
+                            dark:file:bg-zinc-700 dark:file:text-zinc-300 dark:hover:file:bg-zinc-600
+                        "/>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-5 mb-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Product Name</label>
+                        <input type="text" name="name" value="<%= product.name %>" 
+                               class="w-full px-4 py-2 border rounded-md bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price</label>
+                        <input type="number" name="price" value="<%= product.price %>" 
+                               class="w-full px-4 py-2 border rounded-md bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-5 mb-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Discount Price</label>
+                        <input type="number" name="discount" value="<%= product.discount %>" 
+                               class="w-full px-4 py-2 border rounded-md bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Stock Quantity</label>
+                        <input type="number" name="stock" value="<%= product.stock %>" 
+                               class="w-full px-4 py-2 border rounded-md bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Panel Colors (Auto-generated, but editable)</h3>
+                    <div class="grid grid-cols-3 gap-5">
+                        <div>
+                            <label class="text-xs text-gray-500 dark:text-gray-400">Background</label>
+                            <input type="text" name="bgcolor" value="<%= product.bgcolor %>" 
+                                   class="w-full px-3 py-1 border rounded-md mt-1 text-sm bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 dark:text-gray-400">Panel</label>
+                            <input type="text" name="panelcolor" value="<%= product.panelcolor %>" 
+                                   class="w-full px-3 py-1 border rounded-md mt-1 text-sm bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 dark:text-gray-400">Text</label>
+                            <input type="text" name="textcolor" value="<%= product.textcolor %>" 
+                                   class="w-full px-3 py-1 border rounded-md mt-1 text-sm bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-8 flex items-center gap-3">
+                   <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Is Available?</label>
+                   <select name="isAvailable" class="px-3 py-1 border rounded-md text-sm bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white focus:outline-none">
+                       <option value="true" <%= product.isAvailable ? 'selected' : '' %>>Yes, Available</option>
+                       <option value="false" <%= !product.isAvailable ? 'selected' : '' %>>No, Hidden</option>
+                   </select>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition">
+                    Update Product
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('./partials/footer') %>
