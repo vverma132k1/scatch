@@ -1,106 +1,142 @@
 <%- include('./partials/header') %>
 
-<div class="min-h-screen flex flex-col px-10 py-10 bg-gray-50 dark:bg-zinc-900 transition-colors duration-300">
+<div class="min-h-screen flex flex-col items-center justify-center p-10 bg-gray-50 dark:bg-zinc-900 transition-colors duration-300">
     
-    <div class="mb-5">
-        <a href="/owners/admin" class="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
-            <i class="ri-arrow-left-line"></i> Back to Admin Panel
-        </a>
-    </div>
-
-    <% if(error.length > 0){ %>
-        <div class="absolute top-5 left-1/2 -translate-x-1/2 p-3 rounded-md bg-red-500">
+    <% if(error && error.length > 0){ %>
+        <div class="absolute top-5 left-1/2 -translate-x-1/2 p-3 rounded-md bg-red-500 z-50">
             <span class="inline-block mt-1 mb-1 text-white"><%= error %></span>
         </div>
     <% } %>
 
-    <div class="w-full flex-grow flex items-start justify-center">
+    <div class="w-full max-w-3xl bg-white dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-zinc-700">
         
-        <div class="w-full max-w-3xl bg-white dark:bg-zinc-800 p-8 rounded-lg shadow-sm border border-gray-200 dark:border-zinc-700">
-            
-            <h2 class="text-2xl font-bold mb-8 text-black dark:text-white">Edit Product</h2>
-            
-            <form autocomplete="off" action="/products/edit/<%= product._id %>" method="post" enctype="multipart/form-data">
-                
-                <div class="flex items-center gap-5 mb-8">
-                    <div class="w-24 h-24 rounded-md overflow-hidden bg-gray-100 dark:bg-zinc-700 flex items-center justify-center border border-gray-200 dark:border-zinc-600">
-                        <img class="h-20 object-contain" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" alt="">
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-medium mb-1 text-black dark:text-white">Current Image</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Upload a new one to replace it.</p>
-                        <input type="file" name="image" class="block w-full text-sm text-slate-500
-                            file:mr-4 file:py-2 file:px-4
-                            file:rounded-full file:border-0
-                            file:text-sm file:font-semibold
-                            file:bg-blue-50 file:text-blue-700
-                            hover:file:bg-blue-100
-                            dark:file:bg-zinc-700 dark:file:text-zinc-300 dark:hover:file:bg-zinc-600
-                        "/>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-5 mb-5">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Product Name</label>
-                        <input type="text" name="name" value="<%= product.name %>" 
-                               class="w-full px-4 py-2 border rounded-md bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white focus:outline-none focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price</label>
-                        <input type="number" name="price" value="<%= product.price %>" 
-                               class="w-full px-4 py-2 border rounded-md bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white focus:outline-none focus:border-blue-500">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-5 mb-5">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Discount Price</label>
-                        <input type="number" name="discount" value="<%= product.discount %>" 
-                               class="w-full px-4 py-2 border rounded-md bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white focus:outline-none focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Stock Quantity</label>
-                        <input type="number" name="stock" value="<%= product.stock %>" 
-                               class="w-full px-4 py-2 border rounded-md bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white focus:outline-none focus:border-blue-500">
-                    </div>
-                </div>
-
-                <div class="mb-5">
-                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Panel Colors (Auto-generated, but editable)</h3>
-                    <div class="grid grid-cols-3 gap-5">
-                        <div>
-                            <label class="text-xs text-gray-500 dark:text-gray-400">Background</label>
-                            <input type="text" name="bgcolor" value="<%= product.bgcolor %>" 
-                                   class="w-full px-3 py-1 border rounded-md mt-1 text-sm bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-500 dark:text-gray-400">Panel</label>
-                            <input type="text" name="panelcolor" value="<%= product.panelcolor %>" 
-                                   class="w-full px-3 py-1 border rounded-md mt-1 text-sm bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-500 dark:text-gray-400">Text</label>
-                            <input type="text" name="textcolor" value="<%= product.textcolor %>" 
-                                   class="w-full px-3 py-1 border rounded-md mt-1 text-sm bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-8 flex items-center gap-3">
-                   <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Is Available?</label>
-                   <select name="isAvailable" class="px-3 py-1 border rounded-md text-sm bg-white dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 text-black dark:text-white focus:outline-none">
-                       <option value="true" <%= product.isAvailable ? 'selected' : '' %>>Yes, Available</option>
-                       <option value="false" <%= !product.isAvailable ? 'selected' : '' %>>No, Hidden</option>
-                   </select>
-                </div>
-
-                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition">
-                    Update Product
-                </button>
-            </form>
+        <div class="px-8 py-6 border-b border-gray-200 dark:border-zinc-700 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-black dark:text-white">Edit Product</h1>
+            <a href="/owners/admin" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition">
+                <i class="ri-close-line text-2xl"></i>
+            </a>
         </div>
+
+        <form action="/products/edit/<%= product._id %>" method="post" enctype="multipart/form-data" class="px-8 py-8">
+            
+            <div class="flex gap-10">
+                <div class="w-1/3 flex flex-col gap-4">
+                    <h3 class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Product Image</h3>
+                    
+                    <div class="w-full h-64 bg-gray-100 dark:bg-zinc-700 rounded-md border-2 border-dashed border-gray-300 dark:border-zinc-600 flex items-center justify-center overflow-hidden relative group">
+                        <img id="image-preview" 
+                             class="w-full h-full object-contain p-2"
+                             src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" 
+                             alt="Product Preview">
+                        
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 cursor-pointer" onclick="document.getElementById('file-input').click()">
+                            <span class="text-white font-medium text-sm"><i class="ri-upload-cloud-line mr-2"></i>Change Image</span>
+                        </div>
+                    </div>
+
+                    <input id="file-input" type="file" name="image" class="hidden" onchange="previewImage(event)">
+                    
+                    <button type="button" onclick="document.getElementById('file-input').click()" class="w-full py-2 bg-gray-200 dark:bg-zinc-700 text-black dark:text-white text-sm font-semibold rounded hover:bg-gray-300 dark:hover:bg-zinc-600 transition">
+                        Select New Image
+                    </button>
+                    
+                    <p class="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">
+                        Supported formats: JPG, PNG, WEBP
+                    </p>
+                </div>
+
+                <div class="w-2/3 flex flex-col gap-5">
+                    
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-3">Basic Details</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" name="name" placeholder="Product Name" value="<%= product.name %>"
+                                   class="px-4 py-2 border rounded bg-gray-50 border-gray-300 dark:bg-zinc-700 dark:border-zinc-600 dark:text-white focus:outline-none focus:border-blue-500 col-span-2">
+                            
+                            <div class="flex flex-col">
+                                <label class="text-xs text-gray-500 dark:text-gray-400 mb-1">Price (₹)</label>
+                                <input type="number" name="price" placeholder="Price" value="<%= product.price %>"
+                                       class="px-4 py-2 border rounded bg-gray-50 border-gray-300 dark:bg-zinc-700 dark:border-zinc-600 dark:text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            
+                            <div class="flex flex-col">
+                                <label class="text-xs text-gray-500 dark:text-gray-400 mb-1">Discount (₹)</label>
+                                <input type="number" name="discount" placeholder="Discount" value="<%= product.discount %>"
+                                       class="px-4 py-2 border rounded bg-gray-50 border-gray-300 dark:bg-zinc-700 dark:border-zinc-600 dark:text-white focus:outline-none focus:border-blue-500">
+                            </div>
+
+                            <div class="flex flex-col">
+                                <label class="text-xs text-gray-500 dark:text-gray-400 mb-1">Stock Quantity</label>
+                                <input type="number" name="stock" placeholder="10" value="<%= product.stock || 10 %>"
+                                       class="px-4 py-2 border rounded bg-gray-50 border-gray-300 dark:bg-zinc-700 dark:border-zinc-600 dark:text-white focus:outline-none focus:border-blue-500">
+                            </div>
+
+                            <div class="flex flex-col justify-end">
+                                <label class="flex items-center gap-2 cursor-pointer p-2 border rounded bg-gray-50 dark:bg-zinc-700 dark:border-zinc-600 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-600">
+                                    <input type="checkbox" name="isAvailable" value="true" <%= product.isAvailable ? 'checked' : '' %> class="w-4 h-4">
+                                    <span class="text-sm font-medium">Available for Sale</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <h3 class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-3">Panel Colors</h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Background</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="color" name="bgcolor" value="<%= product.bgcolor %>" class="h-8 w-8 rounded cursor-pointer border-0 bg-transparent p-0">
+                                    <span class="text-xs text-gray-500 font-mono"><%= product.bgcolor %></span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Panel</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="color" name="panelcolor" value="<%= product.panelcolor %>" class="h-8 w-8 rounded cursor-pointer border-0 bg-transparent p-0">
+                                    <span class="text-xs text-gray-500 font-mono"><%= product.panelcolor %></span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Text</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="color" name="textcolor" value="<%= product.textcolor %>" class="h-8 w-8 rounded cursor-pointer border-0 bg-transparent p-0">
+                                    <span class="text-xs text-gray-500 font-mono"><%= product.textcolor %></span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-2">*Note: Uploading a new image will auto-generate new colors based on the image palette.</p>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 transition mt-4">
+                        Update Product
+                    </button>
+                    
+                    <a href="/owners/delete-product/<%= product._id %>" class="block w-full text-center text-sm text-red-500 hover:text-red-700 mt-2 font-medium">
+                        Delete Product
+                    </a>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const reader = new FileReader();
+        
+        reader.onload = function() {
+            const preview = document.getElementById('image-preview');
+            // Instantly replace the source of the image tag with the new file
+            preview.src = reader.result;
+        };
+        
+        // Read the file as a Data URL
+        if(input.files && input.files[0]) {
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 
 <%- include('./partials/footer') %>
