@@ -136,7 +136,8 @@ router.get("/cart", isloggedin, async function (req, res) {
             totalDiscount,
             platformFee,
             shippingFee,
-            isCart: true // <--- ADD THIS LINE
+            isCart: true, // <--- ADD THIS LINE
+            keyId: process.env.RAZORPAY_KEY_ID
         });
 
     } catch (error) {
