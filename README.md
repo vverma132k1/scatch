@@ -4,6 +4,15 @@
 
 ---
 
+## 🔗 Links
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-blue?style=for-the-badge)](https://karry-store.onrender.com)
+
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/vverma132k1/karry)
+
+
+---
+
 ## 🚀 Features
 
 ### 🛒 Customer Experience
