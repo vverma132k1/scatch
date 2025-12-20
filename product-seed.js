@@ -3,13 +3,13 @@ const productModel = require("./models/product-model");
 const fs = require("fs");
 const path = require("path");
 
+require('dotenv').config();
 
 // 1. CONNECT TO DB (Check your app.js for the exact URI!)
-// It's usually "mongodb://127.0.0.1:27017/scatch" or your Atlas link
-mongoose.connect("mongodb://127.0.0.1:27017/scatch")
-// mongoose.connect("mongodb+srv://vverma01_db_user_new:uwuw@cluster0.lcjagmp.mongodb.net/?appName=Cluster0")
-.then(() => console.log("Connected to MongoDB for seeding"))
-.catch(err => console.log("Connection Error:", err));
+// mongoose.connect("mongodb://127.0.0.1:27017/scatch")
+mongoose.connect(`${process.env.MONGODB_URI}`)
+    .then(() => console.log("Connected to MongoDB for seeding"))
+    .catch(err => console.log("Connection Error:", err));
 
 // 2. READ THE PLACEHOLDER IMAGE
 const imageBuffer = fs.readFileSync(path.join(__dirname, "bag.jpg"));
