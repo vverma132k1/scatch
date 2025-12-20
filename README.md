@@ -68,7 +68,7 @@ Create a `.env` file in the root directory and add the following keys:
 
 ```env
 # Database Connection
-MONGODB_URI="mongodb+srv://<your_db_username>:<password>@cluster0.mongodb.net/scatch?appName=Cluster0"
+MONGODB_URI="mongodb+srv://<your_db_username>:<password>@cluster0.mongodb.net/test?appName=Cluster0"
 
 # Session & Auth Secrets
 EXPRESS_SESSION_SECRET="your_random_secret_string"
