@@ -7,8 +7,8 @@ const Razorpay = require("razorpay"); // Import Razorpay
 
 // Initialize Razorpay with your Test Keys
 const instance = new Razorpay({
-    key_id: "rzp_test_RsMNddw4A5bhM9",     // Replace with actual Key ID
-    key_secret: "htDeWNJtuA4uXDW1qv2L8tQS", // Replace with actual Key Secret
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
 
@@ -237,7 +237,7 @@ router.post("/api/payment/verify", isloggedin, async function (req, res) {
         const body = razorpay_order_id + "|" + razorpay_payment_id;
         
         const expectedSignature = crypto
-            .createHmac("sha256", "htDeWNJtuA4uXDW1qv2L8tQS") // USE YOUR SECRET KEY
+            .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
             .update(body.toString())
             .digest("hex");
 
