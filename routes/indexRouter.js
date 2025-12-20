@@ -63,9 +63,8 @@ router.get("/shop", isloggedin, async function (req, res) {
         // 4. SORTING LOGIC
         let sortOption = { createdAt: -1 }; // Default: Newest first
         
-        if (sortby === "popular") {
-            sortOption = { views: -1 };
-        } else if (sortby === "price_low") {
+        
+        if (sortby === "price_low") {
             sortOption = { price: 1 }; // Ascending
         } else if (sortby === "price_high") {
             sortOption = { price: -1 }; // Descending

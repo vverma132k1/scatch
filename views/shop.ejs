@@ -32,7 +32,6 @@
                 <h3 class="text-xs font-bold uppercase tracking-widest mb-3 text-black dark:text-white">Sort By</h3>
                 <select class="w-full border rounded-md px-2 py-2 text-sm bg-white dark:bg-zinc-800 dark:border-zinc-700 dark:text-white focus:outline-none cursor-pointer" name="sortby" onchange="this.form.submit()">
                     <option value="newest" <%= sortby === 'newest' ? 'selected' : '' %>>Newest Arrivals</option>
-                    <option value="popular" <%= sortby === 'popular' ? 'selected' : '' %>>Most Popular</option>
                     <option value="price_low" <%= sortby === 'price_low' ? 'selected' : '' %>>Price: Low to High</option>
                     <option value="price_high" <%= sortby === 'price_high' ? 'selected' : '' %>>Price: High to Low</option>
                 </select>
