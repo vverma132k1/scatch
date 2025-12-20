@@ -1,0 +1,74 @@
+<%- include('./partials/header') %>
+
+<div class="min-h-screen bg-gray-50 dark:bg-zinc-900 px-10 py-10 transition-colors duration-300">
+    
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-black dark:text-white">All Orders</h1>
+        <a href="/owners/admin" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md font-medium transition">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <% if (orders.length === 0) { %>
+        <div class="text-center py-20">
+            <h2 class="text-xl text-gray-500 dark:text-gray-400">No orders received yet.</h2>
+        </div>
+    <% } else { %>
+        <div class="overflow-x-auto bg-white dark:bg-zinc-800 shadow-md rounded-lg border border-gray-200 dark:border-zinc-700">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-100 dark:bg-zinc-700/50 text-gray-600 dark:text-gray-300 uppercase text-xs font-bold tracking-wider">
+                    <tr>
+                        <th class="px-6 py-4 border-b dark:border-zinc-700">Date</th>
+                        <th class="px-6 py-4 border-b dark:border-zinc-700">Order ID</th>
+                        <th class="px-6 py-4 border-b dark:border-zinc-700">Customer</th>
+                        <th class="px-6 py-4 border-b dark:border-zinc-700">Items</th>
+                        <th class="px-6 py-4 border-b dark:border-zinc-700">Total</th>
+                        <th class="px-6 py-4 border-b dark:border-zinc-700">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-zinc-700">
+                    <% orders.forEach(order => { %>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-zinc-700/30 transition">
+                            
+                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                                <%= new Date(order.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                            </td>
+
+                            <td class="px-6 py-4 text-sm font-mono text-blue-600 dark:text-blue-400">
+                                #<%= order.orderId.slice(-6) %>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <p class="text-sm font-semibold text-black dark:text-white"><%= order.customerName %></p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400"><%= order.customerEmail %></p>
+                            </td>
+
+                            <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                                <ul class="list-disc pl-4">
+                                    <% order.items.forEach(item => { %>
+                                        <li>
+                                            <span class="font-medium"><%= item.name %></span> 
+                                            <span class="text-xs text-gray-400">x<%= item.quantity %></span>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                            </td>
+
+                            <td class="px-6 py-4 text-sm font-bold text-green-600 dark:text-green-400 whitespace-nowrap">
+                                ₹ <%= order.amount %>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 text-xs font-bold text-green-800 bg-green-100 rounded-full dark:bg-green-900 dark:text-green-300">
+                                    Paid
+                                </span>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</div>
+
+<%- include('./partials/footer') %>
